@@ -18,6 +18,13 @@ export const SubsidiaryCard = ({ subsidiary, isOptimized }: SubsidiaryCardProps)
     }).format(amount);
   };
 
+  // Calculate operational vs deployed amounts
+  const operationalBalance = isOptimized ? subsidiary.balance : subsidiary.balance;
+  const deployedToYield = isOptimized ? 
+    (subsidiary.name === 'Berlin' ? 3500000 : subsidiary.name === 'Paris' ? 3800000 : 1700000) : 0;
+  const totalCapital = operationalBalance + deployedToYield;
+  const dailyYield = isOptimized ? (deployedToYield * 0.045) / 365 : 0;
+
   const getUtilizationColor = (balance: number) => {
     const utilizationRate = balance / 15000000; // Assuming max capacity of 15M
     if (utilizationRate > 0.8) return 'text-destructive';
@@ -49,8 +56,13 @@ export const SubsidiaryCard = ({ subsidiary, isOptimized }: SubsidiaryCardProps)
             </div>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <DollarSign className="h-3 w-3" />
-              Available Liquidity
+              {isOptimized ? 'Operational Liquidity' : 'Available Liquidity'}
             </div>
+            {isOptimized && deployedToYield > 0 && (
+              <div className="text-xs text-success mt-1">
+                +{formatBalance(deployedToYield)} earning 4.5% APY
+              </div>
+            )}
           </div>
         </div>
 
@@ -81,21 +93,57 @@ export const SubsidiaryCard = ({ subsidiary, isOptimized }: SubsidiaryCardProps)
           </div>
         </div>
 
-        {/* Progress bar for liquidity utilization */}
-        <div className="mt-3">
-          <div className="flex justify-between text-xs text-muted-foreground mb-1">
-            <span>Liquidity Utilization</span>
-            <span>{Math.round((subsidiary.balance / 15000000) * 100)}%</span>
-          </div>
-          <div className="w-full bg-muted rounded-full h-2">
-            <div 
-              className={`h-2 rounded-full transition-all duration-500 ${
-                subsidiary.balance / 15000000 > 0.8 ? 'bg-destructive' :
-                subsidiary.balance / 15000000 > 0.6 ? 'bg-warning' : 'bg-success'
-              }`}
-              style={{ width: `${Math.min((subsidiary.balance / 15000000) * 100, 100)}%` }}
-            ></div>
-          </div>
+        {/* Capital deployment visualization */}
+        <div className="mt-3 space-y-2">
+          {isOptimized ? (
+            <>
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Capital Efficiency</span>
+                <span>{Math.round((totalCapital / 15000000) * 100)}% deployed</span>
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 bg-muted rounded-full h-2">
+                    <div 
+                      className="h-2 rounded-full bg-treasury-blue transition-all duration-500"
+                      style={{ width: `${(operationalBalance / totalCapital) * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-xs text-muted-foreground">Operational</span>
+                </div>
+                {deployedToYield > 0 && (
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-muted rounded-full h-2">
+                      <div 
+                        className="h-2 rounded-full bg-treasury-green transition-all duration-500"
+                        style={{ width: `${(deployedToYield / totalCapital) * 100}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-success">Earning +{formatBalance(dailyYield)}/day</span>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                <span>Liquidity Utilization</span>
+                <span>{Math.round((subsidiary.balance / 15000000) * 100)}%</span>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div 
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    subsidiary.balance / 15000000 > 0.8 ? 'bg-destructive' :
+                    subsidiary.balance / 15000000 > 0.6 ? 'bg-warning' : 'bg-success'
+                  }`}
+                  style={{ width: `${Math.min((subsidiary.balance / 15000000) * 100, 100)}%` }}
+                ></div>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Excess capital earning 0% in traditional accounts
+              </div>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>

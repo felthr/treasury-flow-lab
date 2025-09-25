@@ -23,38 +23,50 @@ export const MetricsOverlay = ({ metrics, isOptimized }: MetricsOverlayProps) =>
     }).format(amount);
   };
 
+  // Calculate baseline metrics for optimized mode
+  const baselineMetrics = isOptimized ? {
+    totalSaved: metrics.totalSaved + 156000, // Annual baseline savings
+    timeSaved: metrics.timeSaved + 24, // Days saved per month
+    liquidityFreed: metrics.liquidityFreed + 9500000, // Capital not trapped
+    optimizationGain: metrics.optimizationGain + 28, // Efficiency uplift
+  } : metrics;
+
   const metricsData = [
     {
       icon: DollarSign,
       label: 'Cost Savings',
-      value: formatCurrency(metrics.totalSaved),
+      value: formatCurrency(baselineMetrics.totalSaved),
       color: 'text-success',
       bgColor: 'bg-success/10',
       change: '+99.95%',
+      baseline: isOptimized ? '€156K baseline + transactions' : 'Enable optimization',
     },
     {
       icon: Clock,
       label: 'Time Saved',
-      value: metrics.timeSaved > 0 ? `${metrics.timeSaved} days` : '0 days',
+      value: baselineMetrics.timeSaved > 0 ? `${baselineMetrics.timeSaved} days` : '0 days',
       color: 'text-treasury-blue',
       bgColor: 'bg-treasury-blue/10',
       change: 'Instant vs T+2',
+      baseline: isOptimized ? '24 days/month baseline' : 'Enable optimization',
     },
     {
       icon: TrendingUp,
       label: 'Liquidity Freed',
-      value: formatCurrency(metrics.liquidityFreed),
+      value: formatCurrency(baselineMetrics.liquidityFreed),
       color: 'text-treasury-teal',
       bgColor: 'bg-treasury-teal/10',
       change: '+Capital Efficiency',
+      baseline: isOptimized ? '€9.5M not trapped in settlement' : 'Enable optimization',
     },
     {
       icon: Zap,
       label: 'Optimization Gain',
-      value: `${metrics.optimizationGain.toFixed(1)}%`,
+      value: `${baselineMetrics.optimizationGain.toFixed(1)}%`,
       color: 'text-treasury-purple',
       bgColor: 'bg-treasury-purple/10',
-      change: 'Rail Selection',
+      change: 'Yield + Efficiency',
+      baseline: isOptimized ? '28% baseline efficiency gain' : 'Enable optimization',
     },
   ];
 
@@ -68,14 +80,16 @@ export const MetricsOverlay = ({ metrics, isOptimized }: MetricsOverlayProps) =>
                 <metric.icon className={`h-6 w-6 ${metric.color}`} />
               </div>
               <div className="text-right">
-                <div className={`text-2xl font-bold ${metric.color}`}>
-                  {metric.value}
-                </div>
-                {isOptimized && (
-                  <div className="text-xs text-success font-medium">
-                    {metric.change}
-                  </div>
-                )}
+                 <div className={`text-2xl font-bold ${metric.color}`}>
+                   {metric.value}
+                 </div>
+                 <div className="text-xs font-medium">
+                   {isOptimized ? (
+                     <span className="text-success">{metric.change}</span>
+                   ) : (
+                     <span className="text-muted-foreground">{metric.baseline}</span>
+                   )}
+                 </div>
               </div>
             </div>
             <div className="flex items-center justify-between">
@@ -84,11 +98,13 @@ export const MetricsOverlay = ({ metrics, isOptimized }: MetricsOverlayProps) =>
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
               )}
             </div>
-            {!isOptimized && (
-              <div className="mt-2 text-xs text-muted-foreground">
-                Enable optimization mode to see gains
-              </div>
-            )}
+            <div className="mt-2 text-xs">
+              {isOptimized ? (
+                <span className="text-success font-medium">Active: Earning & Saving</span>
+              ) : (
+                <span className="text-muted-foreground">Enable optimization to activate</span>
+              )}
+            </div>
           </CardContent>
         </Card>
       ))}

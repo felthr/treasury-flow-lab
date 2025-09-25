@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { SubsidiaryCard } from './SubsidiaryCard';
 import { LiquidityPool } from './LiquidityPool';
+import { YieldPool } from './YieldPool';
 import { MetricsOverlay } from './MetricsOverlay';
+import { ComparisonMode } from './ComparisonMode';
 import { TransferModal } from './TransferModal';
 import { BlockchainExplorer } from './BlockchainExplorer';
-import { ArrowLeft, ToggleLeft, ToggleRight, Zap, Clock, TrendingDown, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, ToggleLeft, ToggleRight, Zap, Clock, TrendingDown, AlertTriangle, PieChart, Play, Target } from 'lucide-react';
 
 export interface Subsidiary {
   id: string;
@@ -40,6 +42,7 @@ export const TreasuryDashboard = () => {
   const [transfers, setTransfers] = useState<TransferData[]>([]);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [showExplorer, setShowExplorer] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
   const [selectedTransfer, setSelectedTransfer] = useState<TransferData | null>(null);
   const [metrics, setMetrics] = useState({
     totalSaved: 0,
@@ -47,8 +50,10 @@ export const TreasuryDashboard = () => {
     liquidityFreed: 0,
     optimizationGain: 0,
   });
+  const [totalYieldEarned, setTotalYieldEarned] = useState(0);
 
   const totalLiquidity = subsidiaries.reduce((sum, sub) => sum + sub.balance, 0);
+  const deployedCapital = isOptimized ? 9000000 : 0; // €9M deployed to yield when optimized
 
   const simulateInstantTransfer = () => {
     const newTransfer: TransferData = {
@@ -154,6 +159,34 @@ export const TreasuryDashboard = () => {
     }));
   };
 
+  // New simulation functions
+  const simulateAutoRebalancing = () => {
+    // Simulate intelligent rebalancing with yield pool interaction
+    const rebalanceAmount = 2000000;
+    
+    setSubsidiaries(prev => prev.map(sub => {
+      if (sub.name === 'Berlin') return { ...sub, balance: sub.balance + rebalanceAmount };
+      if (sub.name === 'Paris') return { ...sub, balance: sub.balance - rebalanceAmount / 2 };
+      if (sub.name === 'Madrid') return { ...sub, balance: sub.balance - rebalanceAmount / 2 };
+      return sub;
+    }));
+
+    setMetrics(prev => ({
+      ...prev,
+      optimizationGain: prev.optimizationGain + 12.5,
+      liquidityFreed: prev.liquidityFreed + rebalanceAmount,
+    }));
+  };
+
+  const handleYieldGeneration = (amount: number) => {
+    setTotalYieldEarned(prev => prev + amount);
+    setMetrics(prev => ({
+      ...prev,
+      totalSaved: prev.totalSaved + amount,
+      optimizationGain: prev.optimizationGain + 0.1,
+    }));
+  };
+
   useEffect(() => {
     // Update subsidiary balances when mode changes
     setSubsidiaries(prev => prev.map(sub => ({
@@ -162,6 +195,11 @@ export const TreasuryDashboard = () => {
         (sub.name === 'Berlin' ? 8500000 : sub.name === 'Paris' ? 4200000 : 3300000) :
         (sub.name === 'Berlin' ? 12000000 : sub.name === 'Paris' ? 8000000 : 5000000)
     })));
+    
+    // Reset metrics when switching modes
+    if (!isOptimized) {
+      setTotalYieldEarned(0);
+    }
   }, [isOptimized]);
 
   return (
@@ -181,6 +219,14 @@ export const TreasuryDashboard = () => {
         </div>
         
         <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowComparison(true)}
+            className="flex items-center gap-2"
+          >
+            <PieChart className="h-4 w-4" />
+            Compare Modes
+          </Button>
           <div className="flex items-center gap-2">
             <span className={`text-sm ${!isOptimized ? 'font-semibold text-destructive' : 'text-muted-foreground'}`}>
               Traditional
@@ -202,7 +248,7 @@ export const TreasuryDashboard = () => {
             </span>
           </div>
           <Badge variant={isOptimized ? "default" : "secondary"} className="bg-gradient-primary text-white">
-            {isOptimized ? 'Stablecoin Rails' : 'Traditional Banking'}
+            {isOptimized ? 'Stablecoin Rails Active' : 'Traditional Banking'}
           </Badge>
         </div>
       </div>
@@ -211,7 +257,7 @@ export const TreasuryDashboard = () => {
       <MetricsOverlay metrics={metrics} isOptimized={isOptimized} />
 
       {/* Main Content Grid */}
-      <div className="grid lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid lg:grid-cols-4 gap-6 mb-8">
         {/* Subsidiaries */}
         <div className="lg:col-span-2">
           <Card className="bg-gradient-card border-0 shadow-lg">
@@ -219,6 +265,11 @@ export const TreasuryDashboard = () => {
               <CardTitle className="flex items-center gap-2 text-treasury-blue">
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
                 Global Subsidiaries
+                {isOptimized && (
+                  <Badge className="bg-treasury-green text-white ml-2">
+                    Capital Optimized
+                  </Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -243,10 +294,19 @@ export const TreasuryDashboard = () => {
             isOptimized={isOptimized}
           />
         </div>
+
+        {/* Yield Pool */}
+        <div>
+          <YieldPool
+            deployedCapital={deployedCapital}
+            isOptimized={isOptimized}
+            onYieldGeneration={handleYieldGeneration}
+          />
+        </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         <Button 
           onClick={simulateInstantTransfer}
           className="h-20 bg-gradient-success text-white hover:opacity-90 transition-all duration-300 transform hover:scale-105"
@@ -291,6 +351,18 @@ export const TreasuryDashboard = () => {
             <div className="text-xs opacity-80">Invoice → €1M release</div>
           </div>
         </Button>
+
+        <Button 
+          onClick={simulateAutoRebalancing}
+          disabled={!isOptimized}
+          className="h-20 bg-treasury-teal text-white hover:opacity-90 transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
+        >
+          <div className="text-center">
+            <Target className="h-6 w-6 mx-auto mb-1" />
+            <div className="text-sm font-semibold">Smart Rebalance</div>
+            <div className="text-xs opacity-80">AI-powered liquidity</div>
+          </div>
+        </Button>
       </div>
 
       {/* Modals */}
@@ -304,6 +376,11 @@ export const TreasuryDashboard = () => {
         isOpen={showExplorer}
         onClose={() => setShowExplorer(false)}
         transfer={selectedTransfer}
+      />
+
+      <ComparisonMode
+        isVisible={showComparison}
+        onClose={() => setShowComparison(false)}
       />
     </div>
   );
