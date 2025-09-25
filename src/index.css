@@ -8,35 +8,57 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 248 100% 99%;
+    --foreground: 215 28% 17%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 28% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 28% 17%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 212 100% 45%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary-foreground: 215 28% 17%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 13% 95%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 193 100% 96%;
+    --accent-foreground: 193 100% 30%;
 
-    --destructive: 0 84.2% 60.2%;
+    --success: 142 69% 50%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 48 96% 53%;
+    --warning-foreground: 26 83% 14%;
+
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 212 100% 45%;
 
-    --radius: 0.5rem;
+    /* Treasury-specific colors */
+    --treasury-blue: 212 100% 45%;
+    --treasury-teal: 193 76% 48%;
+    --treasury-green: 142 69% 50%;
+    --treasury-purple: 262 54% 55%;
+    --treasury-orange: 25 95% 53%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(212 100% 45%), hsl(193 76% 48%));
+    --gradient-success: linear-gradient(135deg, hsl(142 69% 50%), hsl(162 69% 45%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(220 13% 98%));
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease-out;
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 

@@ -47,6 +47,21 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        treasury: {
+          blue: "hsl(var(--treasury-blue))",
+          teal: "hsl(var(--treasury-teal))",
+          green: "hsl(var(--treasury-green))",
+          purple: "hsl(var(--treasury-purple))",
+          orange: "hsl(var(--treasury-orange))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -57,6 +72,15 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundImage: {
+        'gradient-primary': 'var(--gradient-primary)',
+        'gradient-success': 'var(--gradient-success)',
+        'gradient-card': 'var(--gradient-card)',
+      },
+      transitionProperty: {
+        'smooth': 'var(--transition-smooth)',
+        'fast': 'var(--transition-fast)',
       },
       borderRadius: {
         lg: "var(--radius)",
