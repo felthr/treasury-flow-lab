@@ -21,15 +21,12 @@ const Index = () => {
             <img 
               src={stableTreasuryLogo} 
               alt="StableTreasury Logo" 
-              className="h-20 w-auto"
+              className="h-40 w-auto"
             />
           </div>
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
-            StableTreasury
-          </h1>
-          <h2 className="text-3xl font-semibold mb-6 text-foreground">
+          <h1 className="text-3xl font-semibold mb-6 text-foreground">
             Automated Treasury Optimization
-          </h2>
+          </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Experience instant cross-border transfers, automated rebalancing, and programmable payouts 
             with stablecoin-powered treasury management.
