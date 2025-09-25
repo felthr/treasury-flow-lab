@@ -3,6 +3,7 @@ import { TreasuryDashboard } from '@/components/TreasuryDashboard';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Zap, Clock, TrendingUp, Shield } from 'lucide-react';
+import stableTreasuryLogo from '@/assets/stable-treasury-logo.png';
 
 const Index = () => {
   const [showDemo, setShowDemo] = useState(false);
@@ -16,9 +17,19 @@ const Index = () => {
       {/* Hero Section */}
       <div className="container mx-auto px-6 py-20">
         <div className="text-center mb-16">
+          <div className="mb-8 flex justify-center">
+            <img 
+              src={stableTreasuryLogo} 
+              alt="StableTreasury Logo" 
+              className="h-20 w-auto"
+            />
+          </div>
           <h1 className="text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
-            Automated Treasury Optimization
+            StableTreasury
           </h1>
+          <h2 className="text-3xl font-semibold mb-6 text-foreground">
+            Automated Treasury Optimization
+          </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Experience instant cross-border transfers, automated rebalancing, and programmable payouts 
             with stablecoin-powered treasury management.
